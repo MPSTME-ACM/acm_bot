@@ -9,10 +9,6 @@ public class Config {
         return dotenv.get("DISCORD_TOKEN");
     }
 
-    public static String getFirebaseConfigPath() {
-        return dotenv.get("FIREBASE_CONFIG_PATH");
-    }
-
     public static String getChannelId() {
         return dotenv.get("CHANNEL_ID");
     }
