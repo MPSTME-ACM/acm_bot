@@ -24,4 +24,8 @@ public class Config {
     public static String getDepartmentRoleId() {
         return dotenv.get("DEPARTMENT_ROLE_ID");
     }
+
+    public static String getResendToken(){
+        return dotenv.get("RESEND_TOKEN");
+    }
 }

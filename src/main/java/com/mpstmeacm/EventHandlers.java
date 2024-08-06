@@ -15,6 +15,7 @@ public class EventHandlers extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        //This isn't working
         List<Invite> invites = event.getGuild().retrieveInvites().complete();
         String inviteCodeUsed = null;
 
