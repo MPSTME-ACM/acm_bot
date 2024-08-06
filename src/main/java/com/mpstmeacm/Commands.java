@@ -13,7 +13,13 @@ public class Commands extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         String[] command = event.getMessage().getContentRaw().split(" ");
+        if (command.length == 0) return;  // Guard against empty commands
+
         if (command[0].equalsIgnoreCase("!register")) {
+            if (!event.getChannel().getId().equals("1270107518626168862")) {
+                event.getChannel().sendMessage("Invalid channel!").queue();
+                return;
+            }
             if (command.length != 4) {
                 event.getChannel().sendMessage("Please provide First Name, email, and DepartmentNo. \n Example usage: `!register Kartik kartik@acmmpstme.com 2`").queue();
                 return;
@@ -23,30 +29,33 @@ public class Commands extends ListenerAdapter {
             String email = command[2];
             String departmentNo = command[3];
 
-            if(!isValidEmail(email)){
+            if (!isValidEmail(email)) {
                 event.getChannel().sendMessage("Email ID is invalid.").queue();
                 return;
             }
 
-            if(!isValidDepartmentNo(departmentNo)){
+            if (!isValidDepartmentNo(departmentNo)) {
                 event.getChannel().sendMessage("Department number must be between 1 and 8.").queue();
                 return;
             }
 
-            String inviteCode = generateInviteAndStoreCode(Objects.requireNonNull(event.getGuild().getTextChannelById(Config.getChannelId())), email, fName, departmentNo);
-
-            event.getChannel().sendMessage("Details received and stored with invite code: " + inviteCode).queue();
+            try {
+                String inviteCode = generateInviteAndStoreCode(Objects.requireNonNull(event.getGuild().getTextChannelById(Config.getChannelId())), email, fName, departmentNo);
+                event.getChannel().sendMessage("Details received and stored with invite code: " + inviteCode).queue();
+            } catch (Exception e) {
+                event.getChannel().sendMessage("An error occurred while processing your request.").queue();
+                e.printStackTrace();
+            }
         }
     }
 
     private String generateInviteAndStoreCode(TextChannel channel, String email, String fName, String departmentNo) {
-        InviteAction inviteAction = channel.createInvite().setMaxAge(7 * 24 * 60 * 60).setMaxUses(1);
+        InviteAction inviteAction = channel.createInvite().setMaxAge(7 * 24 * 60 * 60).setMaxUses(2).setTemporary(false).setUnique(true);
         Invite invite = inviteAction.complete();
         String inviteCode = invite.getCode();
         String inviteLink = invite.getUrl();
 
-
-        FirebaseUtils.storeUserDetails(fName, email, departmentNo, inviteCode);
+        MongoDBUtils.storeUserDetails(fName, email, departmentNo, inviteCode);
         EmailUtils.sendEmail(email, fName, inviteLink);
         return inviteCode;
     }

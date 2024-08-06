@@ -21,11 +21,11 @@ public class Config {
         return dotenv.get("EXECUTIVE_ROLE_ID");
     }
 
-    public static String getDepartmentRoleId() {
-        return dotenv.get("DEPARTMENT_ROLE_ID");
-    }
-
     public static String getResendToken(){
         return dotenv.get("RESEND_TOKEN");
+    }
+
+    public static String getConnectionString() {
+        return dotenv.get("CONNECTION_STRING");
     }
 }
