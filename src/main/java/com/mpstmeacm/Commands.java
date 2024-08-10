@@ -56,7 +56,7 @@ public class Commands extends ListenerAdapter {
         String inviteLink = invite.getUrl();
 
         MongoDBUtils.storeUserDetails(fName, email, departmentNo, inviteCode);
-        EmailUtils.sendEmail(email, fName, inviteLink);
+        EmailUtils.sendEmail(email, fName, inviteLink, getName(departmentNo));
         return inviteCode;
     }
 
@@ -71,6 +71,28 @@ public class Commands extends ListenerAdapter {
             return deptNo >= 1 && deptNo <= 8;
         } catch (NumberFormatException e) {
             return false;
+        }
+    }
+    private String getName(String departmentNo) {
+        switch (Integer.parseInt(departmentNo)) {
+            case 1:
+                return "Development Department";
+            case 2:
+                return "Competitive Programming";
+            case 3:
+                return "Research and Development";
+            case 4:
+                return "Digital Creatives";
+            case 5:
+                return "Logistics & Administration";
+            case 6:
+                return "Social Media & Editorial";
+            case 7:
+                return "Marketing";
+            case 8:
+                return "Public Relations";
+            default:
+                return "";
         }
     }
 }

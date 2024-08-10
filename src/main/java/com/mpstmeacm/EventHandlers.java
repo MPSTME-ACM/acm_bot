@@ -50,7 +50,7 @@ public class EventHandlers extends ListenerAdapter {
         }
     }
 
-    private void assignRolesAndNickname(Member member, String departmentRoleId, String fName) {
+    private void assignRolesAndNickname(Member member, String departmentRoleId, String fName) throws InterruptedException {
         Guild guild = member.getGuild();
         Role executiveRole = guild.getRoleById(Config.getExecutiveRoleId());
         Role departmentRole = guild.getRoleById(departmentRoleId);
@@ -60,6 +60,7 @@ public class EventHandlers extends ListenerAdapter {
                     success -> System.out.println("Added executive role to member"),
                     error -> System.err.println("Failed to add executive role: " + error.getMessage())
             );
+            Thread.sleep(1000);
         } else {
             System.out.println("Executive role not found.");
         }
@@ -70,13 +71,15 @@ public class EventHandlers extends ListenerAdapter {
                     success -> System.out.println("Added department role to member"),
                     error -> System.err.println("Failed to add department role: " + error.getMessage())
             );
+            Thread.sleep(1000);
         } else {
             System.out.println("Department role not found: " + departmentRoleId);
         }
 
         String newNickname = "[" + getDeptPrefix(departmentRoleId) + "] " + fName;
+        System.out.println("Attempting to update nickname to: " + newNickname);
         member.modifyNickname(newNickname).queue(
-                success -> System.out.println("Nickname updated to: " + newNickname),
+                success -> System.out.println("Nickname updated successfully to: " + newNickname),
                 error -> System.err.println("Error updating nickname: " + error.getMessage())
         );
     }
